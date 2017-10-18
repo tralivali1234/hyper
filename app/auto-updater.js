@@ -1,23 +1,44 @@
+// Packages
 const {autoUpdater} = require('electron');
 const ms = require('ms');
+const retry = require('async-retry');
 
+// Utilities
 const notify = require('./notify'); // eslint-disable-line no-unused-vars
 const {version} = require('./package');
+const {getConfig} = require('./config');
 
-// accepted values: `osx`, `win32`
-// https://nuts.gitbook.com/update-windows.html
-const platform = process.platform === 'darwin' ?
-  'osx' :
-  process.platform;
-const FEED_URL = `https://hyper-updates.now.sh/update/${platform}`;
+const {platform} = process;
+
 let isInit = false;
 
-function init() {
+async function init() {
   autoUpdater.on('error', (err, msg) => {
     console.error('Error fetching updates', msg + ' (' + err.stack + ')');
   });
 
-  autoUpdater.setFeedURL(`${FEED_URL}/${version}`);
+  const config = await retry(async () => {
+    const content = await getConfig();
+
+    if (!content) {
+      throw new Error('No config content loaded');
+    }
+
+    return content;
+  });
+
+  // Default to the "stable" update channel
+  let canaryUpdates = false;
+
+  // If defined in the config, switch to the "canary" channel
+  if (config.updateChannel && config.updateChannel === 'canary') {
+    canaryUpdates = true;
+  }
+
+  const updatePrefix = canaryUpdates ? 'releases-canary' : 'releases';
+  const feedURL = `https://${updatePrefix}.hyper.is/update/${platform}`;
+
+  autoUpdater.setFeedURL(`${feedURL}/${version}`);
 
   setTimeout(() => {
     autoUpdater.checkForUpdates();

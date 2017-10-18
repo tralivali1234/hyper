@@ -287,6 +287,10 @@
       #content h3:before {
         content: '### ';
       }
+      
+      #content h4:before {
+        content: '#### ';
+      }
 
       #content code {
         font: 12px Menlo, "DejaVu Sans Mono", "Lucida Console", monospace;
@@ -316,6 +320,7 @@
       #content table {
         width: 100%;
         border-collapse: collapse;
+        margin-bottom: 20px;
       }
 
       #content td > table {
@@ -510,6 +515,7 @@
         #content table {
           margin-left: 0;
           margin-right: 0;
+          margin-bottom: 20px;
         }
 
         #content table td {
@@ -602,37 +608,37 @@
             <td style="width: 33.333%">64-bit</td>
           </tr>
           <tr>
-            <td><b>macOS</b> (.dmg)</td>
+            <td><b>macOS</b> (.app)</td>
             <td id="td-mac-os" colspan="2">
-              <a href="https://hyper-latest.now.sh/latest/dmg">DOWNLOAD <img src="static/download-icon.svg"/></a>
+              <a href="https://releases.hyper.is/download/mac">DOWNLOAD <img src="static/download-icon.svg"/></a>
             </td>
           </tr>
           <tr>
             <td><b>Windows</b> (.exe)</td>
             <td class="soon">COMING SOON</td>
             <td id="td-win">
-              <a href="https://hyper-latest.now.sh/latest/exe">DOWNLOAD <img src="static/download-icon.svg"/></a>
+              <a href="https://releases.hyper.is/download/win">DOWNLOAD <img src="static/download-icon.svg"/></a>
             </td>
           </tr>
           <tr>
             <td><b>Debian</b> (.deb)</td>
             <td class="soon">COMING SOON</td>
             <td id="td-debian">
-              <a href="https://hyper-latest.now.sh/latest/deb">DOWNLOAD <img src="static/download-icon.svg"/></a>
+              <a href="https://releases.hyper.is/download/deb">DOWNLOAD <img src="static/download-icon.svg"/></a>
             </td>
           </tr>
           <tr>
             <td><b>Fedora</b> (.rpm)</td>
             <td class="soon">COMING SOON</td>
             <td id="td-fedora">
-              <a href="https://hyper-latest.now.sh/latest/rpm">DOWNLOAD <img src="static/download-icon.svg"/></a>
+              <a href="https://releases.hyper.is/download/rpm">DOWNLOAD <img src="static/download-icon.svg"/></a>
             </td>
           </tr>
           <tr>
             <td><b>Other Linux distros</b> (.AppImage)</td>
             <td class="soon">COMING SOON</td>
             <td id="td-appimage" colspan="2">
-              <a href="https://hyper-latest.now.sh/latest/AppImage">DOWNLOAD <img src="static/download-icon.svg"/></a>
+              <a href="https://releases.hyper.is/download/AppImage">DOWNLOAD <img src="static/download-icon.svg"/></a>
             </td>
           </tr>
         </table>
@@ -676,6 +682,34 @@
           <a href="https://github.com/bnb/awesome-hyper">Awesome Hyper</a>
           for a curated list of plugins and resources.</p>
 
+          <h2 id="keymaps"><a href="#keymaps">Keymaps</a></h2>
+
+          <P> All command keys can be changed. In order to change them, edit
+             <code>~/.hyper.js</code> and add your desired change to <code>keymaps</code>.
+           </p>
+           <p> Then Hyper will change the default with your custom change.</p>
+           <p> Example: <code>'window:devtools': 'Cmd+Alt+O'</code> <p>
+             <pre><code>module.exports = {
+  config: { /*... */ },
+
+  keymaps: {
+    'window:devtools': 'cmd+alt+o'
+  }
+
+};</code></pre>
+
+        <p>Default keymaps: </p>
+
+        <table>
+          <tbody>
+            <tr>
+              <td><a href="https://github.com/zeit/hyper/blob/master/app/keymaps/win32.json">Windows</a></td>
+              <td><a href="https://github.com/zeit/hyper/blob/master/app/keymaps/linux.json">Linux</a></td>
+              <td><a href="https://github.com/zeit/hyper/blob/master/app/keymaps/darwin.json">macOS</a></td>
+            </tr>
+          </tbody>
+        </table>
+
         <h2 id="cfg"><a href="#cfg">Configuration</a></h2>
 
         <p>The <code>config</code> object seen above in <code>~/.hyper.js</code>
@@ -690,6 +724,11 @@
             </tr>
           </thead>
           <tbody>
+            <tr>
+              <td>"updateChannel"</td>
+              <td>"stable"</td>
+              <td>The update channel to receive updates from</td>
+            </tr>
             <tr>
               <td>"fontSize"</td>
               <td>12</td>
@@ -777,6 +816,11 @@
               <td>If true, selected text will automatically be copied to the clipboard</td>
             </tr>
             <tr>
+              <td>"quickEdit"</td>
+              <td>false</td>
+              <td>If true, on right click selected text will be copied or pasted if no selection is present (true by default on Windows)</td>
+            </tr>
+            <tr>
               <td>"bell"</td>
               <td>"SOUND"</td>
               <td>System bell configuration. Available options are: "SOUND", false</td>
@@ -833,7 +877,7 @@
         extend <code>Hyper</code> is that of its underlying open
         source libraries.</p>
 
-        <p>Your module has to expose at least one of these methods:.</p>
+        <p>Your module has to expose at least one of these methods:</p>
 
         <table class="api">
           <thead>
@@ -947,27 +991,11 @@
               </td>
             </tr>
             <tr>
-              <td><code>onRendererLoad</code></td>
+              <td><code>onRendererWindow</code></td>
               <td>Renderer</td>
               <td>
                 <p>Invoked when a plugin is first loaded or subsequently
                 reloaded in each window.</p>
-                <p>Parameters:</p>
-                <table>
-                  <tr>
-                    <tbody>
-                      <td><code>window</code></td>
-                      <td>The window object</td>
-                    </tbody>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-            <tr>
-              <td><code>onRendererUnload</code></td>
-              <td>Renderer</td>
-              <td>
-                <p>Invoked when a plugin is being unloaded.</p>
                 <p>Parameters:</p>
                 <table>
                   <tr>
@@ -1214,6 +1242,9 @@
         <p>The user can hot-load and hot-reload plugins by pressing
         Command + R (refresh). Please strive to make plugins that don't
         require a complete restart of the application to work.</p>
+        
+        <h4>Notice</h4>
+        <p>Plugins affecting the `BrowserWindow` will the effect on new windows after hot-reload.</p>
 
         <p>In the future we might do this automatically.</p>
 
@@ -1259,7 +1290,16 @@
     &lt;/Tabs&gt;
   &lt;/Header&gt;
   &lt;Terms&gt;
-    &lt;Term /&gt; ...
+    &lt;TermGroup&gt;
+      &lt;SplitPane&gt;
+        &lt;TermGroup&gt;
+          &lt;Term /&gt; ...
+        &lt;/TermGroup&gt;
+        &lt;TermGroup&gt;
+          &lt;Term /&gt; ...
+        &lt;/TermGroup&gt;
+      &lt;/TermGroup&gt;
+    &lt;/SplitPane&gt;
   &lt;/Terms&gt;
   &lt;Notifications&gt;
     &lt;Notification /&gt; ...
@@ -1308,15 +1348,28 @@
           </tbody>
         </table>
 
+
+        <p>Your higher order component can supply a <code>onDecorated</code>
+        property to the decorated component to get a reference to its instance.</p>
+
         <p>We encourage you to maintain compatibility with other decorators.
-        Since many can be set, don't assume that yours is the only one.
-        For example, if you're passing children, compose potential existing
+        Since many can be set, don't assume that yours is the only one.<p>
+
+        <p>For example, if you're passing children, compose potential existing
         values:</p>
 
         <pre><code>render () {
   const customChildren = Array.from(this.props.customChildren)
     .concat(&lt;p&gt;My new child&lt;/p&gt;);
   return &lt;Tab {...this.props} customChildren={customChildren} /&gt;
+}</code></pre>
+
+        <p>Or if you use <code>onDecorated</code> property</p>
+        <pre><code>onDecorated (term) {
+  this.term = term;
+  if (this.props.onDecorated) {
+    this.props.onDecorated(term);
+  }
 }</code></pre>
 
 
@@ -1590,27 +1643,27 @@ exports.mapTermsState = (state, map) => {
         var downloadButtonText = document.getElementById('download-button-text');
 
         if (/Mac/.test(userAgent) && !/iPhone/.test(userAgent) && !/iPad/.test(userAgent)) {
-          downloadButton.setAttribute('href', 'https://hyper-updates.now.sh/download/mac');
+          downloadButton.setAttribute('href', 'https://releases.hyper.is/download/mac');
           downloadButtonText.innerHTML += ' for <strong>macOS</strong>';
           document.getElementById('td-mac-os').classList.add('highlighted');
           document.getElementById('mac-os-icon').classList.remove('is-hidden');
         } else if (/Windows/.test(userAgent)) {
-          downloadButton.setAttribute('href', 'https://hyper-updates.now.sh/download/win');
+          downloadButton.setAttribute('href', 'https://releases.hyper.is/download/win');
           downloadButtonText.innerHTML += ' for <strong>Windows</strong>';
           document.getElementById('td-win').classList.add('highlighted');
           document.getElementById('windows-icon').classList.remove('is-hidden');
         } else if (/Linux/.test(userAgent) && !/Android/.test(userAgent)) {
           document.getElementById('linux-icon').classList.remove('is-hidden');
           if (/Ubuntu/.test(userAgent)) { // needs to be improved with other debian distros
-            downloadButton.setAttribute('href', 'https://hyper-updates.now.sh/download/linux_deb');
+            downloadButton.setAttribute('href', 'https://releases.hyper.is/download/deb');
             downloadButtonText.innerHTML += ' for <strong>Debian</strong>';
             document.getElementById('td-debian').classList.add('highlighted');
           } else if (/Fedora/.test(userAgent)) {
-            downloadButton.setAttribute('href', 'https://hyper-updates.now.sh/download/linux_rpm');
+            downloadButton.setAttribute('href', 'https://releases.hyper.is/download/rpm');
             downloadButtonText.innerHTML += ' for <strong>Fedora</strong>';
             document.getElementById('td-fedora').classList.add('highlighted');
           } else {
-            downloadButton.setAttribute('href', 'https://github.com/zeit/hyper/releases/download/1.2.0/hyper-1.3.1-x86_64-linux.AppImage');
+            downloadButton.setAttribute('href', 'https://releases.hyper.is/download/AppImage');
             downloadButtonText.innerHTML += ' for <strong>Linux</strong>';
             document.getElementById('td-appimage').classList.add('highlighted');
           }
